@@ -167,18 +167,17 @@ export const DrawingCard: React.FC<DrawingCardProps> = ({
         <div
           onClick={(e) => !isTrash && onClick(drawing.id, e)}
           className={clsx(
-            "aspect-[16/10] bg-slate-50 dark:bg-neutral-800/30 relative overflow-hidden flex items-center justify-center border-b-2 border-black dark:border-neutral-700 rounded-t-xl transition-colors",
-            !isTrash &&
-              "cursor-pointer group-hover:bg-neutral-100/10 dark:group-hover:bg-neutral-850",
+            "aspect-[16/10] bg-white dark:bg-neutral-800/30 relative overflow-hidden flex items-center justify-center border-b-2 border-black dark:border-neutral-700 rounded-t-xl",
+            !isTrash && "cursor-pointer",
             isTrash && "cursor-default",
           )}
         >
-          <div className="absolute inset-0 opacity-[0.25] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] [background-size:24px_24px]"></div>
+          <div className="absolute inset-0 z-10 pointer-events-none opacity-[0.25] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] [background-size:24px_24px]" />
 
           {previewSvg ? (
             <div
               className={clsx(
-                "w-full h-full p-4 sm:p-5 flex items-center justify-center [&>svg]:w-auto [&>svg]:h-auto [&>svg]:max-w-full [&>svg]:max-h-full [&>svg]:drop-shadow-xs transition-transform duration-550",
+                "w-full h-full p-4 sm:p-5 flex items-center justify-center [&>svg]:w-auto [&>svg]:h-auto [&>svg]:max-w-full [&>svg]:max-h-full transition-transform duration-550",
                 !hasEmbeddedImages &&
                   "dark:[&>svg]:invert dark:[&>svg_rect[fill='white']]:opacity-0 dark:[&>svg_rect[fill='#ffffff']]:opacity-0",
               )}
