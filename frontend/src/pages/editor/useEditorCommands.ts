@@ -40,7 +40,6 @@ type EditorCommandRefs = {
 };
 
 type UseEditorCommandsParams = {
-  autoHideEnabled: boolean;
   canEdit: boolean;
   debouncedSaveLibrary: (items: any[]) => void;
   drawingId: string | undefined;
@@ -61,9 +60,7 @@ type UseEditorCommandsParams = {
     files?: Record<string, any>,
     options?: { suppressErrors?: boolean },
   ) => Promise<void>;
-  setAutoHideEnabled: (enabled: boolean) => void;
   setDrawingName: (name: string) => void;
-  setIsHeaderVisible: (visible: boolean) => void;
   setIsRenaming: (isRenaming: boolean) => void;
   setIsSavingOnLeave: (isSaving: boolean) => void;
   setNewName: (name: string) => void;
@@ -71,7 +68,6 @@ type UseEditorCommandsParams = {
 };
 
 export const useEditorCommands = ({
-  autoHideEnabled,
   canEdit,
   debouncedSaveLibrary,
   drawingId,
@@ -81,9 +77,7 @@ export const useEditorCommands = ({
   newName,
   refs,
   resolveSafeSnapshot,
-  setAutoHideEnabled,
   setDrawingName,
-  setIsHeaderVisible,
   setIsRenaming,
   setIsSavingOnLeave,
   setNewName,
@@ -274,11 +268,6 @@ export const useEditorCommands = ({
     toast.success("Drawing exported");
   }, [drawingName, refs]);
 
-  const handleToggleAutoHide = useCallback(() => {
-    setAutoHideEnabled(!autoHideEnabled);
-    setIsHeaderVisible(true);
-  }, [autoHideEnabled, setAutoHideEnabled, setIsHeaderVisible]);
-
   const handleRenameStart = useCallback(() => {
     if (!canEdit) return;
     setNewName(drawingName);
@@ -291,6 +280,5 @@ export const useEditorCommands = ({
     handleLibraryChange,
     handleRenameStart,
     handleRenameSubmit,
-    handleToggleAutoHide,
   };
 };

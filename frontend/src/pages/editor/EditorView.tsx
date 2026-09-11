@@ -2,8 +2,6 @@ import React from "react";
 import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
 import {
   ArrowLeft,
-  ChevronDown,
-  ChevronUp,
   CloudOff,
   Download,
   History,
@@ -26,13 +24,11 @@ interface Peer extends UserIdentity {
 type EditorViewProps = {
   id?: string;
   accessLevel: "none" | "view" | "edit" | "owner";
-  autoHideEnabled: boolean;
   autosaveFailing: boolean;
   canEdit: boolean;
   drawingName: string;
   editorContainerRef: React.RefObject<HTMLDivElement>;
   initialData: any;
-  isHeaderVisible: boolean;
   isRenaming: boolean;
   isSavingOnLeave: boolean;
   isSceneLoading: boolean;
@@ -59,7 +55,6 @@ type EditorViewProps = {
   onSetGridStep: (gridStep: number) => void;
   onShareOpen: () => void;
   onHistoryOpen: () => void;
-  onToggleAutoHide: () => void;
 };
 
 const UserAvatar = ({
@@ -90,13 +85,11 @@ const UserAvatar = ({
 export const EditorView: React.FC<EditorViewProps> = ({
   id,
   accessLevel,
-  autoHideEnabled,
   autosaveFailing,
   canEdit,
   drawingName,
   editorContainerRef,
   initialData,
-  isHeaderVisible,
   isRenaming,
   isSavingOnLeave,
   isSceneLoading,
@@ -123,14 +116,10 @@ export const EditorView: React.FC<EditorViewProps> = ({
   onSetGridStep,
   onShareOpen,
   onHistoryOpen,
-  onToggleAutoHide,
 }) => (
   <div className="h-screen flex flex-col bg-white dark:bg-neutral-950 overflow-hidden">
     <header
-      className={clsx(
-        "h-16 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800 flex items-center px-4 justify-between z-10 fixed top-0 left-0 right-0 transition-transform duration-300",
-        isHeaderVisible ? "translate-y-0" : "-translate-y-full",
-      )}
+      className="h-16 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800 flex items-center px-4 justify-between z-10 fixed top-0 left-0 right-0"
     >
       <div className="flex items-center gap-4">
         <button
@@ -202,13 +191,6 @@ export const EditorView: React.FC<EditorViewProps> = ({
             <Share2 size={20} />
           </button>
         ) : null}
-        <button
-          onClick={onToggleAutoHide}
-          className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg text-gray-600 dark:text-gray-300 transition-colors"
-          title={autoHideEnabled ? "Disable auto-hide" : "Enable auto-hide"}
-        >
-          {autoHideEnabled ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-        </button>
         <div className="h-6 w-px bg-gray-300 dark:bg-gray-700" />
         <button
           onClick={onExportClick}
@@ -236,11 +218,11 @@ export const EditorView: React.FC<EditorViewProps> = ({
     </header>
     <div
       ref={editorContainerRef}
-      className="flex-1 w-full relative transition-all duration-300"
+      className="flex-1 w-full relative"
       onDropCapture={onCanvasDropCapture}
       style={{
-        height: isHeaderVisible ? "calc(100vh - 4rem)" : "100vh",
-        marginTop: isHeaderVisible ? "4rem" : "0",
+        height: "calc(100vh - 4rem)",
+        marginTop: "4rem",
       }}
     >
       {loadError ? (

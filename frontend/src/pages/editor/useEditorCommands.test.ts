@@ -28,7 +28,6 @@ const makeRefs = () => ({
 });
 
 const baseParams = (over: Record<string, any> = {}) => ({
-  autoHideEnabled: false,
   canEdit: true,
   debouncedSaveLibrary: vi.fn(),
   drawingId: "d1",
@@ -43,9 +42,7 @@ const baseParams = (over: Record<string, any> = {}) => ({
     staleEmptySnapshot: false,
     staleNonRenderableSnapshot: false,
   }),
-  setAutoHideEnabled: vi.fn(),
   setDrawingName: vi.fn(),
-  setIsHeaderVisible: vi.fn(),
   setIsRenaming: vi.fn(),
   setIsSavingOnLeave: vi.fn(),
   setNewName: vi.fn(),
