@@ -21,6 +21,51 @@ const parseViewBox = (value: string | null): { width: number; height: number } |
 
 const isNear = (a: number, b: number, epsilon = 0.5): boolean => Math.abs(a - b) <= epsilon;
 
+let previewMaskSequence = 0;
+
+const repairFlattenedArrowMasks = (svg: Element) => {
+  for (const visibleRect of Array.from(svg.querySelectorAll("rect"))) {
+    const group = visibleRect.previousElementSibling;
+    const hiddenRect = visibleRect.nextElementSibling;
+    if (
+      group?.localName !== "g" ||
+      group.hasAttribute("mask") ||
+      !group.querySelector("path") ||
+      hiddenRect?.localName !== "rect" ||
+      !["#fff", "#ffffff", "white"].includes(
+        (visibleRect.getAttribute("fill") ?? "").toLowerCase(),
+      ) ||
+      !["#000", "#000000", "black"].includes(
+        (hiddenRect.getAttribute("fill") ?? "").toLowerCase(),
+      ) ||
+      parseCoordinate(visibleRect.getAttribute("x")) !== 0 ||
+      parseCoordinate(visibleRect.getAttribute("y")) !== 0 ||
+      !parseDimension(visibleRect.getAttribute("width")) ||
+      !parseDimension(visibleRect.getAttribute("height")) ||
+      parseCoordinate(hiddenRect.getAttribute("x")) === null ||
+      parseCoordinate(hiddenRect.getAttribute("y")) === null ||
+      !parseDimension(hiddenRect.getAttribute("width")) ||
+      !parseDimension(hiddenRect.getAttribute("height")) ||
+      hiddenRect.getAttribute("opacity") !== "1"
+    ) {
+      continue;
+    }
+
+    const mask = svg.ownerDocument.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "mask",
+    );
+    let maskId: string;
+    do {
+      maskId = `excalidash-preview-mask-${++previewMaskSequence}`;
+    } while (svg.querySelector(`[id="${maskId}"]`));
+    mask.setAttribute("id", maskId);
+    group.setAttribute("mask", `url(#${maskId})`);
+    visibleRect.before(mask);
+    mask.append(visibleRect, hiddenRect);
+  }
+};
+
 const maybeRepairFlattenedImagePreview = (svg: SVGSVGElement) => {
   const rootImage = Array.from(svg.children).find(
     (child) =>
@@ -99,6 +144,7 @@ export const normalizePreviewSvg = (preview: string | null | undefined): string 
       svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
     }
 
+    repairFlattenedArrowMasks(svg);
     maybeRepairFlattenedImagePreview(svg as unknown as SVGSVGElement);
 
     return svg.outerHTML;
